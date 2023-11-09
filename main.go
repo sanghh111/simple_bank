@@ -6,19 +6,22 @@ import (
 
 	"github.com/techschool/simplebank/api"
 	db "github.com/techschool/simplebank/db/sqlc"
+	"github.com/techschool/simplebank/uti"
 
 	_ "github.com/lib/pq"
 )
 
-const (
-	dbDriver      = "postgres"
-	dbSource      = "postgresql://root:passroot@localhost:5432/simple_bank?sslmode=disable"
-	serverAddress = "127.0.0.1:8080"
-)
-
 func main() {
+	uti.LoadConfig(".")
+	config, err := uti.GetConfig()
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	log.Fatal(err)
+	log.Fatal(config)
 
-	conn, err := sql.Open(dbDriver, dbSource)
+	conn, err := sql.Open(config.DbDriver, config.Uri_db)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
@@ -26,6 +29,6 @@ func main() {
 	store := db.NewStore(conn)
 	server := api.NewServer(store)
 
-	server.Start(serverAddress)
+	server.Start(config.ServerSource)
 
 }
