@@ -1,0 +1,15 @@
+version: "2"
+cloud:
+  project: "<PROJECT_ID>"
+sql:
+  - engine: "postgresql"
+    queries: "./db/query/"
+    schema: "./db/migration/"
+    database:
+      uri: "postgresql://root:passroot@host.docker.internal:5432/simple_bank"
+    gen:
+      go:
+        package: "db"
+        out: "/db/sqlc"
+        emit_json_tags: true
+        emit_empty_slices: true

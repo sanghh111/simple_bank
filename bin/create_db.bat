@@ -1,0 +1,1 @@
+docker exec -it postgres-16 createdb --username=root --owner=root simple_bank

@@ -1,0 +1,1 @@
+docker exec -it postgres-16 dropdb simple_bank
