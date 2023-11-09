@@ -6,20 +6,21 @@ import (
 	"testing"
 
 	_ "github.com/lib/pq"
+	"github.com/techschool/simplebank/uti"
 )
 
 var testQueries *Queries
 
-const (
-	dbDriver = "postgres"
-	dbSource = "postgresql://root:passroot@localhost:5432/simple_bank?sslmode=disable"
-)
-
 var testDB *sql.DB
 
 func TestMain(m *testing.M) {
-	var err error
-	testDB, err = sql.Open(dbDriver, dbSource)
+	uti.LoadConfig("../..")
+	config, err := uti.GetConfig()
+	if err != nil {
+		log.Fatal("cannot connect to config: ", err)
+		return
+	}
+	testDB, err = sql.Open(config.DB_DRIVER, config.URI_DB)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}

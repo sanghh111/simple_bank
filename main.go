@@ -15,13 +15,11 @@ func main() {
 	uti.LoadConfig(".")
 	config, err := uti.GetConfig()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("cannot connect to config: ", err)
 		return
 	}
-	log.Fatal(err)
-	log.Fatal(config)
 
-	conn, err := sql.Open(config.DbDriver, config.Uri_db)
+	conn, err := sql.Open(config.DB_DRIVER, config.URI_DB)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
@@ -29,6 +27,6 @@ func main() {
 	store := db.NewStore(conn)
 	server := api.NewServer(store)
 
-	server.Start(config.ServerSource)
+	server.Start(config.SERVER_SOURCE)
 
 }
