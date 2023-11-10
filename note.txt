@@ -1,2 +1,6 @@
 docker run --rm -v "$(pwd):/src" -w /src sqlc/sqlc generate
 unmarshaling
+
+mockgen -package mock_package -destination db/mock/store.go github.com/techschool/simplebank/db/sqlc Store
+
+table-driven test set
