@@ -22,6 +22,8 @@ func NewServer(sotre db.Store) *Server {
 	router.GET("/account/:id", server.getAccountById)
 	router.GET("/accounts/", server.getListAccount)
 
+	router.POST("/transfertx/", server.transferMoney)
+
 	server.route = router
 	return server
 }

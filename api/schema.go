@@ -16,3 +16,14 @@ type reqeustListAccountParam struct {
 type getAccountByIDParam struct {
 	ID int64 `uri:"id" binding:"required"`
 }
+
+type transferMoneyParam struct {
+	FromAccountID int64 `json:"from_account_id" binding:"required"`
+	ToAccountID   int64 `json:"to_account_id" binding:"required"`
+	Amount        int64 `json:"ammount" binding:"required"`
+}
+
+type TransferMoneyRequest struct {
+	RequestInfo  schema.RequestInfoParam `json:"requestInfo"`
+	TransferInfo transferMoneyParam      `json:"transferInfo"`
+}
