@@ -89,6 +89,7 @@ func (req *CreateUserRequest) valid(store db.Store, ctx *gin.Context) error {
 	return nil
 }
 
+// login with security basic authen
 func (server *Server) login(ctx *gin.Context) {
 	now := time.Now()
 	username, password, ok := ctx.Request.BasicAuth()
