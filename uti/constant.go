@@ -14,6 +14,12 @@ const (
 	FromAccountExisted        = "05"
 	ToAccountExisted          = "06"
 	FromAccountNotEnoughMoney = "07"
+	UsernameEmpty             = "08"
+	PasswordEmpty             = "09"
+	FullNameEmpty             = "10"
+	EmailEmpty                = "11"
+	UserNameExisted           = "12"
+	EmailExisted              = "13"
 )
 
 var MessInputError = map[string]string{
@@ -25,4 +31,10 @@ var MessInputError = map[string]string{
 	FromAccountExisted:        "From account not existed",
 	ToAccountExisted:          "To account not existed",
 	FromAccountNotEnoughMoney: "From account not enough money",
+	UsernameEmpty:             "Username empty",
+	PasswordEmpty:             "Password empty",
+	FullNameEmpty:             "Fullname empty",
+	EmailEmpty:                "Email empty",
+	UserNameExisted:           "Username existed",
+	EmailExisted:              "Email Existed",
 }

@@ -19,8 +19,10 @@ func NewServer(sotre db.Store) *Server {
 	router := gin.Default()
 
 	router.POST("/accounts/", server.createAccount)
+	router.POST("/user/", server.createUser)
 	router.GET("/account/:id", server.getAccountById)
 	router.GET("/accounts/", server.getListAccount)
+	router.POST("/login/", server.login)
 
 	router.POST("/transfertx/", server.transferMoney)
 

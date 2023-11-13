@@ -27,3 +27,17 @@ type TransferMoneyRequest struct {
 	RequestInfo  schema.RequestInfoParam `json:"requestInfo"`
 	TransferInfo transferMoneyParam      `json:"transferInfo"`
 }
+
+type CreateUserRequest struct {
+	RequestInfo schema.RequestInfoParam `json:"requestInfo"`
+	Password    string                  `json:"password"`
+	Username    string                  `json:"username"`
+	Email       string                  `json:"email"`
+	Fullname    string                  `json:"fullname"`
+}
+
+type UserResponse struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Fullname string `json:"fullname"`
+}

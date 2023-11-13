@@ -21,7 +21,10 @@ func (requestInfoParam *RequestInfoParam) ValidateRequestInfo() (RequestInfoValu
 	if requestInfoParam.RequestTime == "" {
 		return requestInfoValue, errors.New(uti.RequestTime)
 	}
-
+	err := (&requestInfoValue).LoadInput(requestInfoParam)
+	if err != nil {
+		return requestInfoValue, err
+	}
 	return requestInfoValue, nil
 }
 
@@ -29,7 +32,7 @@ func (requestInfoValue *RequestInfoValue) LoadInput(requestinfoParam *RequestInf
 	var err error
 	requestInfoValue.RequestId = requestinfoParam.RequestId
 	requestInfoValue.LangCode = requestinfoParam.LangCode
-	requestInfoValue.RequestTime, err = uti.StringToDateTime(requestinfoParam.LangCode)
+	requestInfoValue.RequestTime, err = uti.StringToDateTime(requestinfoParam.RequestTime)
 	if err != nil {
 		return err
 	}

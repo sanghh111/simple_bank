@@ -30,8 +30,10 @@ func GetResponseError(err error, requestId string, requestTime time.Time) *Respo
 	var code string = "99"
 	mess, ok := uti.MessInputError[err.Error()]
 	if !ok {
+		// Get message
 		mess = err.Error()
 	} else {
+		// get Code Error
 		code = err.Error()
 	}
 
