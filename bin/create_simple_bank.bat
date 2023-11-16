@@ -1,0 +1,1 @@
+docker run --name simplebank --network bank-network -e GIN_MODE=release -e URI_DB="postgresql://root:passroot@postgres-16:5432/simple_bank?sslmode=disable" -p 8080:8080 simplebank:latest
