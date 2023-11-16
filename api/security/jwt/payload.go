@@ -16,8 +16,6 @@ type Payload struct {
 // NewPayLoad creates a new token payload with a specific username and duration
 func NewPayLoad(Username string, d time.Duration) (*Payload, error) {
 	now := time.Now()
-	fmt.Println("duration: ", d)
-	fmt.Println("now: ", now)
 	return &Payload{
 		Username:    Username,
 		ExpiredDate: now.Add(d),

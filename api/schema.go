@@ -5,7 +5,6 @@ import "github.com/techschool/simplebank/api/schema"
 type CreateAccountRequest struct {
 	RequestInfo schema.RequestInfoParam `json:"requestInfo"`
 	Balance     int64                   `json:"balance" binding:"required"`
-	Owner       string                  `json:"owner" binding:"required"`
 }
 
 type reqeustListAccountParam struct {
@@ -40,4 +39,9 @@ type UserResponse struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Fullname string `json:"fullname"`
+}
+
+type TokenResponse struct {
+	AccessToken string `json:"accessToken"`
+	Type        string `json:"type"`
 }

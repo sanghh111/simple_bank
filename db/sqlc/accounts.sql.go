@@ -55,6 +55,31 @@ func (q *Queries) GetAccount(ctx context.Context, id int64) (Account, error) {
 	return i, err
 }
 
+const getAccountByOwner = `-- name: GetAccountByOwner :one
+SELECT id, owner, balance, currency, created_at FROM accounts
+WHERE id = $1
+AND owner = $2
+LIMIT 1
+`
+
+type GetAccountByOwnerParams struct {
+	ID    int64  `json:"id"`
+	Owner string `json:"owner"`
+}
+
+func (q *Queries) GetAccountByOwner(ctx context.Context, arg GetAccountByOwnerParams) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getAccountByOwner, arg.ID, arg.Owner)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Owner,
+		&i.Balance,
+		&i.Currency,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getAccountForUpdate = `-- name: GetAccountForUpdate :one
 SELECT id, owner, balance, currency, created_at FROM accounts
 WHERE id = $1 LIMIT 1
@@ -76,17 +101,19 @@ func (q *Queries) GetAccountForUpdate(ctx context.Context, id int64) (Account, e
 
 const listAccount = `-- name: ListAccount :many
 SELECT id, owner, balance, currency, created_at FROM accounts
-OFFSET $1 
-LIMIT  $2
+WHERE owner = $1
+OFFSET $2 
+LIMIT  $3
 `
 
 type ListAccountParams struct {
-	Offset int64 `json:"offset"`
-	Limit  int64 `json:"limit"`
+	Owner  string `json:"owner"`
+	Offset int64  `json:"offset"`
+	Limit  int64  `json:"limit"`
 }
 
 func (q *Queries) ListAccount(ctx context.Context, arg ListAccountParams) ([]Account, error) {
-	rows, err := q.db.QueryContext(ctx, listAccount, arg.Offset, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, listAccount, arg.Owner, arg.Offset, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

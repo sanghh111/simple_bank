@@ -8,6 +8,8 @@ type Config struct {
 	DB_DRIVER     string `mapstructure:"DB_DRIVER"`
 	URI_DB        string `mapstructure:"URI_DB"`
 	SERVER_SOURCE string `mapstructure:"SERVER_SOURCE"`
+	APIKEY        string `mapstructure:"APIKEY"`
+	DURATION      string `mapstructure:"DURATION"`
 }
 
 func LoadConfig(stringPath string) {

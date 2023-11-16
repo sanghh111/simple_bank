@@ -8,6 +8,29 @@ import (
 	"github.com/techschool/simplebank/uti"
 )
 
+func RandomAccountByOwner(t *testing.T, user User) Account {
+
+	arg := CreateAccountParams{
+		Owner:    user.Username,
+		Balance:  uti.RandomMoney(),
+		Currency: uti.RandomString(4),
+	}
+
+	account, err := testQueries.CreateAccount(context.Background(), arg)
+
+	require.NoError(t, err)
+	require.NotEmpty(t, account)
+
+	require.Equal(t, arg.Balance, account.Balance)
+	require.Equal(t, arg.Currency, account.Currency)
+	require.Equal(t, arg.Owner, account.Owner)
+
+	require.NotEmpty(t, account.ID)
+	require.NotEmpty(t, account.CreatedAt)
+
+	return account
+}
+
 func RandomAccount(t *testing.T) Account {
 
 	user := createRandomUser(t)
@@ -53,11 +76,13 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestListAccount(t *testing.T) {
+	user := createRandomUser(t)
 	for i := 0; i < 10; i++ {
-		RandomAccount(t)
+		RandomAccountByOwner(t, user)
 	}
 
 	arg := ListAccountParams{
+		Owner:  user.Username,
 		Offset: 5,
 		Limit:  5,
 	}
@@ -85,4 +110,17 @@ func TestUpdatBalance(t *testing.T) {
 	require.NotEmpty(t, acccount_updater)
 	require.Equal(t, account.Balance+balance, acccount_updater.Balance)
 
+}
+
+func TestGetAccountByOwner(t *testing.T) {
+	user := createRandomUser(t)
+	account := RandomAccountByOwner(t, user)
+
+	accountQuery, err := testQueries.GetAccountByOwner(context.Background(), GetAccountByOwnerParams{
+		ID:    account.ID,
+		Owner: user.Username,
+	})
+
+	require.NoError(t, err)
+	require.Equal(t, user.Username, accountQuery.Owner)
 }

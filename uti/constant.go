@@ -20,6 +20,7 @@ const (
 	EmailEmpty                = "11"
 	UserNameExisted           = "12"
 	EmailExisted              = "13"
+	Forbidden                 = "14"
 )
 
 var MessInputError = map[string]string{
@@ -37,4 +38,5 @@ var MessInputError = map[string]string{
 	EmailEmpty:                "Email empty",
 	UserNameExisted:           "Username existed",
 	EmailExisted:              "Email Existed",
+	Forbidden:                 "Forbidden",
 }

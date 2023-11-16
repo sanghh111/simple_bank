@@ -8,8 +8,9 @@ RETURNING *;
 
 -- name: ListAccount :many
 SELECT * FROM accounts
-OFFSET $1 
-LIMIT  $2;
+WHERE owner = $1
+OFFSET $2 
+LIMIT  $3;
 
 -- name: GetAccount :one
 SELECT * FROM accounts
@@ -26,3 +27,9 @@ UPDATE "accounts"
 set balance = $1
 where id = $2
 RETURNING *;
+
+-- name: GetAccountByOwner :one
+SELECT * FROM accounts
+WHERE id = $1
+AND owner = $2
+LIMIT 1;

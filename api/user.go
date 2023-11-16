@@ -95,7 +95,7 @@ func (server *Server) login(ctx *gin.Context) {
 	username, password, ok := ctx.Request.BasicAuth()
 	if !ok {
 		ctx.JSON(http.StatusForbidden, errResponse(
-			errors.New("Forbidden"),
+			errors.New(uti.Forbidden),
 			"",
 			now))
 		return
@@ -104,7 +104,7 @@ func (server *Server) login(ctx *gin.Context) {
 	user, err := server.store.GetUser(ctx, username)
 	if err != nil {
 		ctx.JSON(http.StatusForbidden, errResponse(
-			errors.New("Forbidden"),
+			errors.New(uti.Forbidden),
 			"",
 			now))
 		return
@@ -112,16 +112,19 @@ func (server *Server) login(ctx *gin.Context) {
 	ok = uti.CheckPassword(password, user.HashPassword)
 	if !ok {
 		ctx.JSON(http.StatusForbidden, errResponse(
-			errors.New("Forbidden"),
+			errors.New(uti.Forbidden),
 			"",
 			now))
 		return
 	}
-	userResponse := UserResponse{
-		Username: user.Username,
-		Email:    user.Email,
-		Fullname: user.FullName,
+	access_token, err := server.jwtMarker.BuildToken(username)
+	if err != nil {
+		ctx.JSON(http.StatusForbidden, errResponse(
+			errors.New(uti.Forbidden),
+			"",
+			now))
+		return
 	}
-	response := schema.GetResponse(userResponse, "", now)
+	response := TokenResponse{AccessToken: access_token, Type: "bearer"}
 	ctx.JSON(http.StatusOK, response)
 }
