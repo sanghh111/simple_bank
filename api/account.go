@@ -17,17 +17,11 @@ import (
 
 func (server *Server) createAccount(ctx *gin.Context) {
 	requestTime := time.Now()
-	token, ok := schema.ParseBearerAuth(ctx)
+	user, ok := schema.GetUserByBeareToken(ctx, server.jwtMarker, server.store)
 	if !ok {
 		ctx.JSON(http.StatusForbidden, errResponse(errors.New(uti.Forbidden), "", requestTime))
 		return
 	}
-	payload, err := server.jwtMarker.VerifyToken(token)
-	if err != nil {
-		ctx.JSON(http.StatusForbidden, errResponse(err, "", requestTime))
-		return
-	}
-	user, _ := server.store.GetUser(ctx, payload.Username)
 	var req CreateAccountRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errResponse(err, "", requestTime))
@@ -41,7 +35,7 @@ func (server *Server) createAccount(ctx *gin.Context) {
 	}
 
 	arg := db.CreateAccountParams{
-		Owner:    user.Username,
+		Owner:    user,
 		Balance:  req.Balance,
 		Currency: "VND",
 	}
@@ -59,19 +53,13 @@ func (server *Server) createAccount(ctx *gin.Context) {
 func (server *Server) getAccountById(ctx *gin.Context) {
 	requestTime := time.Now()
 	requestId := uuid.New().String()
-	token, ok := schema.ParseBearerAuth(ctx)
+	user, ok := schema.GetUserByBeareToken(ctx, server.jwtMarker, server.store)
 	if !ok {
-		ctx.JSON(http.StatusForbidden, errResponse(errors.New(uti.Forbidden), requestId, requestTime))
+		ctx.JSON(http.StatusForbidden, errResponse(errors.New(uti.Forbidden), "", requestTime))
 		return
 	}
-	payload, err := server.jwtMarker.VerifyToken(token)
-	if err != nil {
-		ctx.JSON(http.StatusForbidden, errResponse(err, requestId, requestTime))
-		return
-	}
-	user, _ := server.store.GetUser(ctx, payload.Username)
 	var req getAccountByIDParam
-	err = ctx.ShouldBindUri(&req)
+	err := ctx.ShouldBindUri(&req)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errResponse(err, requestId, requestTime))
@@ -80,7 +68,7 @@ func (server *Server) getAccountById(ctx *gin.Context) {
 
 	account, err := server.store.GetAccountByOwner(ctx, db.GetAccountByOwnerParams{
 		ID:    req.ID,
-		Owner: user.Username,
+		Owner: user,
 	})
 
 	if err != nil {
@@ -100,17 +88,11 @@ func (server *Server) getAccountById(ctx *gin.Context) {
 func (server *Server) getListAccount(ctx *gin.Context) {
 	requestTime := time.Now()
 	requestId := uuid.New().String()
-	token, ok := schema.ParseBearerAuth(ctx)
+	user, ok := schema.GetUserByBeareToken(ctx, server.jwtMarker, server.store)
 	if !ok {
-		ctx.JSON(http.StatusForbidden, errResponse(errors.New(uti.Forbidden), requestId, requestTime))
+		ctx.JSON(http.StatusForbidden, errResponse(errors.New(uti.Forbidden), "", requestTime))
 		return
 	}
-	payload, err := server.jwtMarker.VerifyToken(token)
-	if err != nil {
-		ctx.JSON(http.StatusForbidden, errResponse(err, requestId, requestTime))
-		return
-	}
-	user, _ := server.store.GetUser(ctx, payload.Username)
 	var queryParam reqeustListAccountParam
 	_ = ctx.ShouldBindQuery(&queryParam)
 	if queryParam.PageId <= 0 {
@@ -122,7 +104,7 @@ func (server *Server) getListAccount(ctx *gin.Context) {
 	}
 
 	accounts, err := server.store.ListAccount(ctx, db.ListAccountParams{
-		Owner:  user.Username,
+		Owner:  user,
 		Offset: (queryParam.PageSize * (queryParam.PageId - 1)),
 		Limit:  queryParam.PageSize,
 	})
