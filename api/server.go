@@ -26,6 +26,7 @@ func NewServer(sotre db.Store, marker securityJWT.Maker) *Server {
 	router.GET("/account/:id", server.getAccountById)
 	router.GET("/accounts/", server.getListAccount)
 	router.POST("/login/", server.login)
+	router.GET("/info/", server.getInfo)
 
 	router.POST("/transfertx/", server.transferMoney)
 

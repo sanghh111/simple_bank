@@ -1,4 +1,4 @@
-Create table "session"(
+Create table "sessions"(
     "uuid" text primary key,
     "username" text not null,
     "refesh_token" text not null,
@@ -8,4 +8,4 @@ Create table "session"(
     "created_at" timestamptz not null default (now())
 );
 
-Alter table "session" add FOREIGN key ("username") REFERENCES "users" ("username");
+Alter table "sessions" add FOREIGN key ("username") REFERENCES "users" ("username");

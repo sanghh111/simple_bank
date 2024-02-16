@@ -4,3 +4,5 @@ unmarshaling
 mockgen -package mock_package -destination db/mock/store.go github.com/techschool/simplebank/db/sqlc Store
 
 table-driven test set
+
+migrate create -dir db/migration -ext sql -seq add_session 

@@ -136,3 +136,39 @@ func (server *Server) getListAccount(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, response)
 }
+
+func (server *Server) getInfo(ctx *gin.Context) {
+	requestTime := time.Now()
+	requestId := uuid.New().String()
+	token, ok := schema.ParseBearerAuth(ctx)
+	if !ok {
+		ctx.JSON(http.StatusForbidden, errResponse(errors.New(uti.Forbidden), requestId, requestTime))
+		return
+	}
+	payload, err := server.jwtMarker.VerifyToken(token)
+	if err != nil {
+		ctx.JSON(http.StatusForbidden, errResponse(err, requestId, requestTime))
+		return
+	}
+	user, _ := server.store.GetUser(ctx, payload.Username)
+	var queryParam reqeustListAccountParam
+	_ = ctx.ShouldBindQuery(&queryParam)
+	if queryParam.PageId <= 0 {
+		queryParam.PageId = 1
+	}
+
+	if queryParam.PageSize <= 0 {
+		queryParam.PageSize = 10
+	}
+
+	account, err := server.store.GetUser(ctx, user.Username)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errResponse(err, requestId, requestTime))
+		return
+	}
+
+	response := schema.GetResponse(account, requestId, requestTime)
+
+	ctx.JSON(http.StatusOK, response)
+}
